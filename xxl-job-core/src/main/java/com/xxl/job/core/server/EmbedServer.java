@@ -17,6 +17,7 @@ import io.netty.handler.codec.http.*;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +28,8 @@ import java.util.concurrent.*;
  *
  * @author xuxueli 2020-04-11 21:25
  */
+@Slf4j
 public class EmbedServer {
-    private static final Logger logger = LoggerFactory.getLogger(EmbedServer.class);
 
     private ExecutorBiz executorBiz;
     private Thread thread;
@@ -83,7 +84,7 @@ public class EmbedServer {
                     // bind
                     ChannelFuture future = bootstrap.bind(port).sync();
 
-                    logger.info(">>>>>>>>>>> xxl-job remoting server start success, nettype = {}, port = {}", EmbedServer.class, port);
+                    log.info(">>>>>>>>>>> xxl-job remoting server start success, nettype = {}, port = {}", EmbedServer.class, port);
 
                     // start registry
                     startRegistry(appname, address);
@@ -93,9 +94,9 @@ public class EmbedServer {
 
                 } catch (InterruptedException e) {
                     if (e instanceof InterruptedException) {
-                        logger.info(">>>>>>>>>>> xxl-job remoting server stop.");
+                        log.info(">>>>>>>>>>> xxl-job remoting server stop.");
                     } else {
-                        logger.error(">>>>>>>>>>> xxl-job remoting server error.", e);
+                        log.error(">>>>>>>>>>> xxl-job remoting server error.", e);
                     }
                 } finally {
                     // stop
@@ -103,7 +104,7 @@ public class EmbedServer {
                         workerGroup.shutdownGracefully();
                         bossGroup.shutdownGracefully();
                     } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
+                        log.error(e.getMessage(), e);
                     }
                 }
 
@@ -122,7 +123,7 @@ public class EmbedServer {
 
         // stop registry
         stopRegistry();
-        logger.info(">>>>>>>>>>> xxl-job remoting server destroy success.");
+        log.info(">>>>>>>>>>> xxl-job remoting server destroy success.");
     }
 
 
@@ -209,7 +210,7 @@ public class EmbedServer {
                     return new ReturnT<String>(ReturnT.FAIL_CODE, "invalid request, uri-mapping("+ uri +") not found.");
                 }
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
                 return new ReturnT<String>(ReturnT.FAIL_CODE, "request error:" + ThrowableUtil.toString(e));
             }
         }
@@ -235,7 +236,7 @@ public class EmbedServer {
 
         @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-            logger.error(">>>>>>>>>>> xxl-job provider netty_http server caught exception", cause);
+            log.error(">>>>>>>>>>> xxl-job provider netty_http server caught exception", cause);
             ctx.close();
         }
 
@@ -243,7 +244,7 @@ public class EmbedServer {
         public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
             if (evt instanceof IdleStateEvent) {
                 ctx.channel().close();      // beat 3N, close if idle
-                logger.debug(">>>>>>>>>>> xxl-job provider netty_http server close an idle channel.");
+                log.debug(">>>>>>>>>>> xxl-job provider netty_http server close an idle channel.");
             } else {
                 super.userEventTriggered(ctx, evt);
             }

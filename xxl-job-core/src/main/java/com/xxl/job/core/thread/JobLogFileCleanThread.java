@@ -2,8 +2,7 @@ package com.xxl.job.core.thread;
 
 import com.xxl.job.core.log.XxlJobFileAppender;
 import com.xxl.job.core.util.FileUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.text.ParseException;
@@ -17,8 +16,8 @@ import java.util.concurrent.TimeUnit;
  *
  * @author xuxueli 2017-12-29 16:23:43
  */
+@Slf4j
 public class JobLogFileCleanThread {
-    private static Logger logger = LoggerFactory.getLogger(JobLogFileCleanThread.class);
 
     private static JobLogFileCleanThread instance = new JobLogFileCleanThread();
     public static JobLogFileCleanThread getInstance(){
@@ -68,7 +67,7 @@ public class JobLogFileCleanThread {
                                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
                                     logFileCreateDate = simpleDateFormat.parse(childFile.getName());
                                 } catch (ParseException e) {
-                                    logger.error(e.getMessage(), e);
+                                    log.error(e.getMessage(), e);
                                 }
                                 if (logFileCreateDate == null) {
                                     continue;
@@ -83,7 +82,7 @@ public class JobLogFileCleanThread {
 
                     } catch (Exception e) {
                         if (!toStop) {
-                            logger.error(e.getMessage(), e);
+                            log.error(e.getMessage(), e);
                         }
 
                     }
@@ -92,11 +91,11 @@ public class JobLogFileCleanThread {
                         TimeUnit.DAYS.sleep(1);
                     } catch (InterruptedException e) {
                         if (!toStop) {
-                            logger.error(e.getMessage(), e);
+                            log.error(e.getMessage(), e);
                         }
                     }
                 }
-                logger.info(">>>>>>>>>>> xxl-job, executor JobLogFileCleanThread thread destory.");
+                log.info(">>>>>>>>>>> xxl-job, executor JobLogFileCleanThread thread destory.");
 
             }
         });
@@ -117,7 +116,7 @@ public class JobLogFileCleanThread {
         try {
             localThread.join();
         } catch (InterruptedException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
     }
 

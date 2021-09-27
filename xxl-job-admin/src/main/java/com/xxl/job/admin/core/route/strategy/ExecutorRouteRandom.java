@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Random;
 
 /**
+ * 随机路由
+ *
  * Created by xuxueli on 17/3/10.
  */
 public class ExecutorRouteRandom extends ExecutorRouter {
@@ -17,7 +19,7 @@ public class ExecutorRouteRandom extends ExecutorRouter {
     @Override
     public ReturnT<String> route(TriggerParam triggerParam, List<String> addressList) {
         String address = addressList.get(localRandom.nextInt(addressList.size()));
-        return new ReturnT<String>(address);
+        return new ReturnT<>(address);
     }
 
 }

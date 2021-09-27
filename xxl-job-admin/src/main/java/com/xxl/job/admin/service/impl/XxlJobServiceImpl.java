@@ -1,5 +1,6 @@
 package com.xxl.job.admin.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.xxl.job.admin.core.cron.CronExpression;
 import com.xxl.job.admin.core.model.XxlJobGroup;
 import com.xxl.job.admin.core.model.XxlJobInfo;
@@ -15,8 +16,7 @@ import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import com.xxl.job.core.glue.GlueTypeEnum;
 import com.xxl.job.core.util.DateUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -27,9 +27,9 @@ import java.util.*;
  * core job action for xxl-job
  * @author xuxueli 2016-5-28 15:30:33
  */
+@Slf4j
 @Service
 public class XxlJobServiceImpl implements XxlJobService {
-	private static Logger logger = LoggerFactory.getLogger(XxlJobServiceImpl.class);
 
 	@Resource
 	private XxlJobGroupDao xxlJobGroupDao;
@@ -65,11 +65,11 @@ public class XxlJobServiceImpl implements XxlJobService {
 		if (group == null) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_choose")+I18nUtil.getString("jobinfo_field_jobgroup")) );
 		}
-		if (jobInfo.getJobDesc()==null || jobInfo.getJobDesc().trim().length()==0) {
-			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input")+I18nUtil.getString("jobinfo_field_jobdesc")) );
+		if (StrUtil.isNotBlank(jobInfo.getJobDesc())) {
+			return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input")+I18nUtil.getString("jobinfo_field_jobdesc")) );
 		}
-		if (jobInfo.getAuthor()==null || jobInfo.getAuthor().trim().length()==0) {
-			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input")+I18nUtil.getString("jobinfo_field_author")) );
+		if (StrUtil.isNotBlank(jobInfo.getAuthor())) {
+			return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input")+I18nUtil.getString("jobinfo_field_author")) );
 		}
 
 		// valid trigger
@@ -125,11 +125,11 @@ public class XxlJobServiceImpl implements XxlJobService {
 				if (childJobIdItem!=null && childJobIdItem.trim().length()>0 && isNumeric(childJobIdItem)) {
 					XxlJobInfo childJobInfo = xxlJobInfoDao.loadById(Integer.parseInt(childJobIdItem));
 					if (childJobInfo==null) {
-						return new ReturnT<String>(ReturnT.FAIL_CODE,
+						return new ReturnT<>(ReturnT.FAIL_CODE,
 								MessageFormat.format((I18nUtil.getString("jobinfo_field_childJobId")+"({0})"+I18nUtil.getString("system_not_found")), childJobIdItem));
 					}
 				} else {
-					return new ReturnT<String>(ReturnT.FAIL_CODE,
+					return new ReturnT<>(ReturnT.FAIL_CODE,
 							MessageFormat.format((I18nUtil.getString("jobinfo_field_childJobId")+"({0})"+I18nUtil.getString("system_unvalid")), childJobIdItem));
 				}
 			}
@@ -259,7 +259,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 				}
 				nextTriggerTime = nextValidTime.getTime();
 			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
+				log.error(e.getMessage(), e);
 				return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("schedule_type")+I18nUtil.getString("system_unvalid")) );
 			}
 		}
@@ -319,8 +319,8 @@ public class XxlJobServiceImpl implements XxlJobService {
 			}
 			nextTriggerTime = nextValidTime.getTime();
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("schedule_type")+I18nUtil.getString("system_unvalid")) );
+			log.error(e.getMessage(), e);
+			return new ReturnT<>(ReturnT.FAIL_CODE, (I18nUtil.getString("schedule_type")+I18nUtil.getString("system_unvalid")) );
 		}
 
 		xxlJobInfo.setTriggerStatus(1);

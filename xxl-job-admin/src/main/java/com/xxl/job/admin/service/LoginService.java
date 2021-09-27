@@ -45,7 +45,7 @@ public class LoginService {
 
         // param
         if (username==null || username.trim().length()==0 || password==null || password.trim().length()==0){
-            return new ReturnT<String>(500, I18nUtil.getString("login_param_empty"));
+            return new ReturnT<>(500, I18nUtil.getString("login_param_empty"));
         }
 
         // valid passowrd

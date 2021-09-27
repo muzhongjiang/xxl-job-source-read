@@ -1,7 +1,6 @@
 package com.xxl.job.core.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,10 +12,9 @@ import java.io.IOException;
  *
  * @author xuxueli 2017-12-29 17:56:48
  */
+@Slf4j
 public class FileUtil {
-    private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
-
-
+ 
     /**
      * delete recursively
      *
@@ -62,13 +60,13 @@ public class FileUtil {
             fos.write(data);
             fos.flush();
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         } finally {
             if (fos != null) {
                 try {
                     fos.close();
                 } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
         }
@@ -87,14 +85,14 @@ public class FileUtil {
 
             return filecontent;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return null;
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
         }
@@ -109,7 +107,7 @@ public class FileUtil {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                logger.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
                 return;
             }
         }
@@ -127,13 +125,13 @@ public class FileUtil {
             fos.write(content.getBytes("utf-8"));
             fos.flush();
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         } finally {
             if (fos != null) {
                 try {
                     fos.close();
                 } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
         }
@@ -164,13 +162,13 @@ public class FileUtil {
                 }
             }
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         } finally {
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
         }

@@ -1,15 +1,14 @@
 package com.xxl.job.core.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 
 /**
  * @author xuxueli 2020-04-12 0:14:00
  */
+@Slf4j
 public class JdkSerializeTool {
-    private static Logger logger = LoggerFactory.getLogger(JdkSerializeTool.class);
 
 
     // ------------------------ serialize and unserialize ------------------------
@@ -31,13 +30,13 @@ public class JdkSerializeTool {
             byte[] bytes = baos.toByteArray();
             return bytes;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         } finally {
             try {
                 oos.close();
                 baos.close();
             } catch (IOException e) {
-                logger.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
             }
         }
         return null;
@@ -58,12 +57,12 @@ public class JdkSerializeTool {
             ObjectInputStream ois = new ObjectInputStream(bais);
             return ois.readObject();
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         } finally {
             try {
                 bais.close();
             } catch (IOException e) {
-                logger.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
             }
         }
         return null;

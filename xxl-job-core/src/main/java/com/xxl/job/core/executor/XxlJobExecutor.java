@@ -80,6 +80,7 @@ public class XxlJobExecutor  {
         // init executor-server
         initEmbedServer(address, ip, port, appname, accessToken);
     }
+
     public void destroy(){
         // destory executor-server
         stopEmbedServer();
@@ -114,14 +115,13 @@ public class XxlJobExecutor  {
     // ---------------------- admin-client (rpc invoker) ----------------------
     private static List<AdminBiz> adminBizList;
     private void initAdminBizList(String adminAddresses, String accessToken) throws Exception {
+
         if (adminAddresses!=null && adminAddresses.trim().length()>0) {
             for (String address: adminAddresses.trim().split(",")) {
                 if (address!=null && address.trim().length()>0) {
-
                     AdminBiz adminBiz = new AdminBizClient(address.trim(), accessToken);
-
                     if (adminBizList == null) {
-                        adminBizList = new ArrayList<AdminBiz>();
+                        adminBizList = new ArrayList<>();
                     }
                     adminBizList.add(adminBiz);
                 }
@@ -181,7 +181,8 @@ public class XxlJobExecutor  {
 
 
     // ---------------------- job thread repository ----------------------
-    private static ConcurrentMap<Integer, JobThread> jobThreadRepository = new ConcurrentHashMap<Integer, JobThread>();
+    private static ConcurrentMap<Integer, JobThread> jobThreadRepository = new ConcurrentHashMap<>();
+
     public static JobThread registJobThread(int jobId, IJobHandler handler, String removeOldReason){
         JobThread newJobThread = new JobThread(jobId, handler);
         newJobThread.start();
@@ -195,6 +196,7 @@ public class XxlJobExecutor  {
 
         return newJobThread;
     }
+
     public static JobThread removeJobThread(int jobId, String removeOldReason){
         JobThread oldJobThread = jobThreadRepository.remove(jobId);
         if (oldJobThread != null) {
@@ -205,6 +207,7 @@ public class XxlJobExecutor  {
         }
         return null;
     }
+
     public static JobThread loadJobThread(int jobId){
         JobThread jobThread = jobThreadRepository.get(jobId);
         return jobThread;

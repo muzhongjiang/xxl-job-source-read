@@ -2,8 +2,7 @@ package com.xxl.job.admin.core.thread;
 
 import com.xxl.job.admin.core.conf.XxlJobAdminConfig;
 import com.xxl.job.admin.core.model.XxlJobLogReport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -16,8 +15,8 @@ import java.util.concurrent.TimeUnit;
  *
  * @author xuxueli 2019-11-22
  */
+@Slf4j
 public class JobLogReportHelper {
-    private static Logger logger = LoggerFactory.getLogger(JobLogReportHelper.class);
 
     private static JobLogReportHelper instance = new JobLogReportHelper();
     public static JobLogReportHelper getInstance(){
@@ -27,6 +26,7 @@ public class JobLogReportHelper {
 
     private Thread logrThread;
     private volatile boolean toStop = false;
+    
     public void start(){
         logrThread = new Thread(new Runnable() {
 
@@ -36,14 +36,11 @@ public class JobLogReportHelper {
                 // last clean log time
                 long lastCleanLogTime = 0;
 
-
                 while (!toStop) {
 
                     // 1、log-report refresh: refresh log report in 3 days
                     try {
-
                         for (int i = 0; i < 3; i++) {
-
                             // today
                             Calendar itemDay = Calendar.getInstance();
                             itemDay.add(Calendar.DAY_OF_MONTH, -i);
@@ -89,7 +86,7 @@ public class JobLogReportHelper {
 
                     } catch (Exception e) {
                         if (!toStop) {
-                            logger.error(">>>>>>>>>>> xxl-job, job log report thread error:{}", e);
+                            log.error(">>>>>>>>>>> xxl-job, job log report thread error:{}", e);
                         }
                     }
 
@@ -123,14 +120,12 @@ public class JobLogReportHelper {
                         TimeUnit.MINUTES.sleep(1);
                     } catch (Exception e) {
                         if (!toStop) {
-                            logger.error(e.getMessage(), e);
+                            log.error(e.getMessage(), e);
                         }
                     }
 
                 }
-
-                logger.info(">>>>>>>>>>> xxl-job, job log report thread stop");
-
+                log.info(">>>>>>>>>>> xxl-job, job log report thread stop");
             }
         });
         logrThread.setDaemon(true);
@@ -145,7 +140,7 @@ public class JobLogReportHelper {
         try {
             logrThread.join();
         } catch (InterruptedException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
     }
 

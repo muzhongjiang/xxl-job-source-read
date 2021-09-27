@@ -10,8 +10,7 @@ import com.xxl.job.core.executor.XxlJobExecutor;
 import com.xxl.job.core.log.XxlJobFileAppender;
 import com.xxl.job.core.util.FileUtil;
 import com.xxl.job.core.util.JdkSerializeTool;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,8 +22,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by xuxueli on 16/7/22.
  */
+@Slf4j
 public class TriggerCallbackThread {
-    private static Logger logger = LoggerFactory.getLogger(TriggerCallbackThread.class);
 
     private static TriggerCallbackThread instance = new TriggerCallbackThread();
     public static TriggerCallbackThread getInstance(){
@@ -37,7 +36,7 @@ public class TriggerCallbackThread {
     private LinkedBlockingQueue<HandleCallbackParam> callBackQueue = new LinkedBlockingQueue<HandleCallbackParam>();
     public static void pushCallBack(HandleCallbackParam callback){
         getInstance().callBackQueue.add(callback);
-        logger.debug(">>>>>>>>>>> xxl-job, push callback request, logId:{}", callback.getLogId());
+        log.debug(">>>>>>>>>>> xxl-job, push callback request, logId:{}", callback.getLogId());
     }
 
     /**
@@ -50,7 +49,7 @@ public class TriggerCallbackThread {
 
         // valid
         if (XxlJobExecutor.getAdminBizList() == null) {
-            logger.warn(">>>>>>>>>>> xxl-job, executor callback config fail, adminAddresses is null.");
+            log.warn(">>>>>>>>>>> xxl-job, executor callback config fail, adminAddresses is null.");
             return;
         }
 
@@ -78,7 +77,7 @@ public class TriggerCallbackThread {
                         }
                     } catch (Exception e) {
                         if (!toStop) {
-                            logger.error(e.getMessage(), e);
+                            log.error(e.getMessage(), e);
                         }
                     }
                 }
@@ -92,10 +91,10 @@ public class TriggerCallbackThread {
                     }
                 } catch (Exception e) {
                     if (!toStop) {
-                        logger.error(e.getMessage(), e);
+                        log.error(e.getMessage(), e);
                     }
                 }
-                logger.info(">>>>>>>>>>> xxl-job, executor callback thread destory.");
+                log.info(">>>>>>>>>>> xxl-job, executor callback thread destory.");
 
             }
         });
@@ -113,7 +112,7 @@ public class TriggerCallbackThread {
                         retryFailCallbackFile();
                     } catch (Exception e) {
                         if (!toStop) {
-                            logger.error(e.getMessage(), e);
+                            log.error(e.getMessage(), e);
                         }
 
                     }
@@ -121,11 +120,11 @@ public class TriggerCallbackThread {
                         TimeUnit.SECONDS.sleep(RegistryConfig.BEAT_TIMEOUT);
                     } catch (InterruptedException e) {
                         if (!toStop) {
-                            logger.error(e.getMessage(), e);
+                            log.error(e.getMessage(), e);
                         }
                     }
                 }
-                logger.info(">>>>>>>>>>> xxl-job, executor retry callback thread destory.");
+                log.info(">>>>>>>>>>> xxl-job, executor retry callback thread destory.");
             }
         });
         triggerRetryCallbackThread.setDaemon(true);
@@ -140,7 +139,7 @@ public class TriggerCallbackThread {
             try {
                 triggerCallbackThread.join();
             } catch (InterruptedException e) {
-                logger.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
             }
         }
 
@@ -150,7 +149,7 @@ public class TriggerCallbackThread {
             try {
                 triggerRetryCallbackThread.join();
             } catch (InterruptedException e) {
-                logger.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
             }
         }
 

@@ -1,8 +1,7 @@
 package com.xxl.job.core.util;
 
 import com.xxl.job.core.biz.model.ReturnT;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.net.ssl.*;
 import java.io.BufferedReader;
@@ -12,13 +11,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Map;
 
 /**
  * @author xuxueli 2018-11-25 00:55:31
  */
+@Slf4j
 public class XxlJobRemotingUtil {
-    private static Logger logger = LoggerFactory.getLogger(XxlJobRemotingUtil.class);
+    
     public static final String XXL_JOB_ACCESS_TOKEN = "XXL-JOB-ACCESS-TOKEN";
 
 
@@ -31,7 +30,7 @@ public class XxlJobRemotingUtil {
 
             connection.setSSLSocketFactory(newFactory);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
         connection.setHostnameVerifier(new HostnameVerifier() {
             public boolean verify(String hostname, SSLSession session) {
@@ -131,12 +130,12 @@ public class XxlJobRemotingUtil {
                 ReturnT returnT = GsonTool.fromJson(resultJson, ReturnT.class, returnTargClassOfT);
                 return returnT;
             } catch (Exception e) {
-                logger.error("xxl-rpc remoting (url="+url+") response content invalid("+ resultJson +").", e);
+                log.error("xxl-rpc remoting (url="+url+") response content invalid("+ resultJson +").", e);
                 return new ReturnT<String>(ReturnT.FAIL_CODE, "xxl-rpc remoting (url="+url+") response content invalid("+ resultJson +").");
             }
 
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return new ReturnT<String>(ReturnT.FAIL_CODE, "xxl-rpc remoting error("+ e.getMessage() +"), for url : " + url);
         } finally {
             try {
@@ -147,7 +146,7 @@ public class XxlJobRemotingUtil {
                     connection.disconnect();
                 }
             } catch (Exception e2) {
-                logger.error(e2.getMessage(), e2);
+                log.error(e2.getMessage(), e2);
             }
         }
     }

@@ -1,8 +1,7 @@
 package com.xxl.job.admin.core.util;
 
 import com.xxl.job.admin.core.conf.XxlJobAdminConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.EncodedResource;
@@ -19,8 +18,8 @@ import java.util.Properties;
  *
  * @author xuxueli 2018-01-17 20:39:06
  */
+@Slf4j
 public class I18nUtil {
-    private static Logger logger = LoggerFactory.getLogger(I18nUtil.class);
 
     private static Properties prop = null;
     public static Properties loadI18nProp(){
@@ -37,7 +36,7 @@ public class I18nUtil {
             EncodedResource encodedResource = new EncodedResource(resource,"UTF-8");
             prop = PropertiesLoaderUtils.loadProperties(encodedResource);
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
         return prop;
     }
@@ -59,7 +58,7 @@ public class I18nUtil {
      * @return
      */
     public static String getMultString(String... keys) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
 
         Properties prop = loadI18nProp();
         if (keys!=null && keys.length>0) {

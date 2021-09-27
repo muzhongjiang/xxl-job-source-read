@@ -1,7 +1,6 @@
 package com.xxl.job.core.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -16,10 +15,10 @@ import java.util.Map;
  *
  * @author xuxueli 2018-08-19 01:24:11
  */
+@Slf4j
 public class DateUtil {
 
     // ---------------------- format parse ----------------------
-    private static Logger logger = LoggerFactory.getLogger(DateUtil.class);
 
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
@@ -115,7 +114,7 @@ public class DateUtil {
             Date date = getDateFormat(pattern).parse(dateString);
             return date;
         } catch (Exception e) {
-            logger.warn("parse date error, dateString = {}, pattern={}; errorMsg = {}", dateString, pattern, e.getMessage());
+            log.warn("parse date error, dateString = {}, pattern={}; errorMsg = {}", dateString, pattern, e.getMessage());
             return null;
         }
     }

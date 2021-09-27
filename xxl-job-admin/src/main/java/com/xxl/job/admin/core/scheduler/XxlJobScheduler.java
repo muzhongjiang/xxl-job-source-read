@@ -1,13 +1,13 @@
 package com.xxl.job.admin.core.scheduler;
 
+import cn.hutool.core.util.StrUtil;
 import com.xxl.job.admin.core.conf.XxlJobAdminConfig;
 import com.xxl.job.admin.core.thread.*;
 import com.xxl.job.admin.core.util.I18nUtil;
 import com.xxl.job.core.biz.ExecutorBiz;
 import com.xxl.job.core.biz.client.ExecutorBizClient;
 import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -15,10 +15,8 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * @author xuxueli 2018-10-28 00:18:17
  */
-
+@Slf4j
 public class XxlJobScheduler  {
-    private static final Logger logger = LoggerFactory.getLogger(XxlJobScheduler.class);
-
 
     public void init() throws Exception {
         // init i18n
@@ -42,7 +40,7 @@ public class XxlJobScheduler  {
         // start-schedule  ( depend on JobTriggerPoolHelper )
         JobScheduleHelper.getInstance().start();
 
-        logger.info(">>>>>>>>> init xxl-job admin success.");
+        log.info(">>>>>>>>> init xxl-job admin success.");
     }
 
     
@@ -80,7 +78,7 @@ public class XxlJobScheduler  {
     private static ConcurrentMap<String, ExecutorBiz> executorBizRepository = new ConcurrentHashMap<String, ExecutorBiz>();
     public static ExecutorBiz getExecutorBiz(String address) throws Exception {
         // valid
-        if (address==null || address.trim().length()==0) {
+        if (StrUtil.isBlank(address)) {
             return null;
         }
 

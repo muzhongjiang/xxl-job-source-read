@@ -6,12 +6,16 @@ import com.xxl.job.admin.core.util.I18nUtil;
 import com.xxl.job.core.biz.ExecutorBiz;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.biz.model.TriggerParam;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
 /**
+ * 故障转移
+ *
  * Created by xuxueli on 17/3/10.
  */
+@Slf4j
 public class ExecutorRouteFailover extends ExecutorRouter {
 
     @Override
@@ -25,8 +29,8 @@ public class ExecutorRouteFailover extends ExecutorRouter {
                 ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(address);
                 beatResult = executorBiz.beat();
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-                beatResult = new ReturnT<String>(ReturnT.FAIL_CODE, ""+e );
+                log.error(e.getMessage(), e);
+                beatResult = new ReturnT<>(ReturnT.FAIL_CODE, ""+e );
             }
             beatResultSB.append( (beatResultSB.length()>0)?"<br><br>":"")
                     .append(I18nUtil.getString("jobconf_beat") + "：")

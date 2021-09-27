@@ -1,5 +1,11 @@
 package com.xxl.job.admin.core.util;
 
+import cn.hutool.core.util.StrUtil;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -10,44 +16,16 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class LocalCacheUtil {
 
-    private static ConcurrentMap<String, LocalCacheData> cacheRepository = new ConcurrentHashMap<String, LocalCacheData>();   // 类型建议用抽象父类，兼容性更好；
-    private static class LocalCacheData{
+    private static ConcurrentMap<String, LocalCacheData> cacheRepository = new ConcurrentHashMap<>();   // 类型建议用抽象父类，兼容性更好；
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    private static class LocalCacheData {
         private String key;
         private Object val;
         private long timeoutTime;
 
-        public LocalCacheData() {
-        }
-
-        public LocalCacheData(String key, Object val, long timeoutTime) {
-            this.key = key;
-            this.val = val;
-            this.timeoutTime = timeoutTime;
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public void setKey(String key) {
-            this.key = key;
-        }
-
-        public Object getVal() {
-            return val;
-        }
-
-        public void setVal(Object val) {
-            this.val = val;
-        }
-
-        public long getTimeoutTime() {
-            return timeoutTime;
-        }
-
-        public void setTimeoutTime(long timeoutTime) {
-            this.timeoutTime = timeoutTime;
-        }
     }
 
 
@@ -59,13 +37,13 @@ public class LocalCacheUtil {
      * @param cacheTime
      * @return
      */
-    public static boolean set(String key, Object val, long cacheTime){
+    public static boolean set(String key, Object val, long cacheTime) {
 
         // clean timeout cache, before set new cache (avoid cache too much)
         cleanTimeoutCache();
 
         // set new cache
-        if (key==null || key.trim().length()==0) {
+        if (key == null || key.trim().length() == 0) {
             return false;
         }
         if (val == null) {
@@ -86,8 +64,8 @@ public class LocalCacheUtil {
      * @param key
      * @return
      */
-    public static boolean remove(String key){
-        if (key==null || key.trim().length()==0) {
+    public static boolean remove(String key) {
+        if (StrUtil.isEmpty(key)) {
             return false;
         }
         cacheRepository.remove(key);
@@ -100,12 +78,12 @@ public class LocalCacheUtil {
      * @param key
      * @return
      */
-    public static Object get(String key){
-        if (key==null || key.trim().length()==0) {
+    public static Object get(String key) {
+        if (StrUtil.isEmpty(key)) {
             return null;
         }
         LocalCacheData localCacheData = cacheRepository.get(key);
-        if (localCacheData!=null && System.currentTimeMillis()<localCacheData.getTimeoutTime()) {
+        if (localCacheData != null && System.currentTimeMillis() < localCacheData.getTimeoutTime()) {
             return localCacheData.getVal();
         } else {
             remove(key);
@@ -118,11 +96,12 @@ public class LocalCacheUtil {
      *
      * @return
      */
-    public static boolean cleanTimeoutCache(){
-        if (!cacheRepository.keySet().isEmpty()) {
-            for (String key: cacheRepository.keySet()) {
+    public static boolean cleanTimeoutCache() {
+        Set<String> keySet = cacheRepository.keySet();
+        if (!keySet.isEmpty()) {
+            for (String key : keySet) {
                 LocalCacheData localCacheData = cacheRepository.get(key);
-                if (localCacheData!=null && System.currentTimeMillis()>=localCacheData.getTimeoutTime()) {
+                if (localCacheData != null && System.currentTimeMillis() >= localCacheData.getTimeoutTime()) {
                     cacheRepository.remove(key);
                 }
             }

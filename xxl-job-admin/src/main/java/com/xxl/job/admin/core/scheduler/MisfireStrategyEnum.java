@@ -15,7 +15,7 @@ public enum MisfireStrategyEnum {
     /**
      * fire once now
      */
-    FIRE_ONCE_NOW(I18nUtil.getString("misfire_strategy_fire_once_now"));
+    FIRE_ONCE_NOW(I18nUtil.getString("misfire_strategy_fire_once_now"));//立即执行一次
 
     private String title;
 
