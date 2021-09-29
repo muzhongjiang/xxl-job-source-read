@@ -13,6 +13,7 @@
 	<modules>
 		<module>xxl-job-core</module>
 		<module>xxl-job-admin</module>
+		<module>xxl-job-admin2</module>
 		<module>xxl-job-executor-samples</module>
     </modules>
 
@@ -93,23 +94,7 @@
 							</execution>
 						</executions>
 					</plugin>
-					<!-- Javadoc -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>${maven-javadoc-plugin.version}</version>
-						<executions>
-							<execution>
-								<phase>package</phase>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-								<configuration>
-									<doclint>none</doclint>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
+
 					<!-- GPG -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>

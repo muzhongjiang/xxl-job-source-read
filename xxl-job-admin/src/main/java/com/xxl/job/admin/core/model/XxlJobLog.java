@@ -1,6 +1,7 @@
 package com.xxl.job.admin.core.model;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 
@@ -9,6 +10,7 @@ import java.util.Date;
  * @author xuxueli  2015-12-19 23:19:09
  */
 @Data
+@Accessors(chain = true)
 public class XxlJobLog {
 	
 	private long id;

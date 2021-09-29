@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Date;
 
 /**
+ * worker Biz 功能实现
+ * <p>
  * Created by xuxueli on 17/3/1.
  */
 @Slf4j
@@ -30,13 +32,8 @@ public class ExecutorBizImpl implements ExecutorBiz {
     public ReturnT<String> idleBeat(IdleBeatParam idleBeatParam) {
 
         // isRunningOrHasQueue
-        boolean isRunningOrHasQueue = false;
         JobThread jobThread = XxlJobExecutor.loadJobThread(idleBeatParam.getJobId());
         if (jobThread != null && jobThread.isRunningOrHasQueue()) {
-            isRunningOrHasQueue = true;
-        }
-
-        if (isRunningOrHasQueue) {
             return new ReturnT<>(ReturnT.FAIL_CODE, "job thread is running or has trigger queue.");
         }
         return ReturnT.SUCCESS;
@@ -69,7 +66,7 @@ public class ExecutorBizImpl implements ExecutorBiz {
             if (jobHandler == null) {
                 jobHandler = newJobHandler;
                 if (jobHandler == null) {
-                    return new ReturnT<String>(ReturnT.FAIL_CODE, "job handler [" + triggerParam.getExecutorHandler() + "] not found.");
+                    return new ReturnT<>(ReturnT.FAIL_CODE, "job handler [" + triggerParam.getExecutorHandler() + "] not found.");
                 }
             }
 
@@ -93,7 +90,7 @@ public class ExecutorBizImpl implements ExecutorBiz {
                     jobHandler = new GlueJobHandler(originJobHandler, triggerParam.getGlueUpdatetime());
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
-                    return new ReturnT<String>(ReturnT.FAIL_CODE, e.getMessage());
+                    return new ReturnT<>(ReturnT.FAIL_CODE, e.getMessage());
                 }
             }
         } else if (glueTypeEnum != null && glueTypeEnum.isScript()) {
@@ -122,7 +119,7 @@ public class ExecutorBizImpl implements ExecutorBiz {
             ExecutorBlockStrategyEnum blockStrategy = ExecutorBlockStrategyEnum.match(triggerParam.getExecutorBlockStrategy(), null);
             switch (blockStrategy) {
 
-                //丢弃后续调度:
+                //丢弃后续调度（触发的时候才会丢弃）:
                 case DISCARD_LATER: {
                     // discard when running
                     if (jobThread.isRunningOrHasQueue()) {
@@ -149,7 +146,7 @@ public class ExecutorBizImpl implements ExecutorBiz {
             jobThread = XxlJobExecutor.registJobThread(triggerParam.getJobId(), jobHandler, removeOldReason);
         }
 
-        // push data to queue
+        //任务添加到对应 Thread 的 queue
         ReturnT<String> pushResult = jobThread.pushTriggerQueue(triggerParam);
         return pushResult;
     }

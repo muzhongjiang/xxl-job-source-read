@@ -18,8 +18,6 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.*;
 
@@ -137,7 +135,6 @@ public class EmbedServer {
      * @author xuxueli 2015-11-24 22:25:15
      */
     public static class EmbedHttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
-        private static final Logger logger = LoggerFactory.getLogger(EmbedHttpServerHandler.class);
 
         private ExecutorBiz executorBiz;
         private String accessToken;

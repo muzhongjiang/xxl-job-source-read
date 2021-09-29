@@ -4,7 +4,6 @@ import cn.hutool.core.util.StrUtil;
 import com.xxl.job.admin.core.conf.XxlJobAdminConfig;
 import com.xxl.job.admin.core.thread.*;
 import com.xxl.job.admin.core.util.I18nUtil;
-import com.xxl.job.core.biz.ExecutorBiz;
 import com.xxl.job.core.biz.client.ExecutorBizClient;
 import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,7 @@ import java.util.concurrent.ConcurrentMap;
  * @author xuxueli 2018-10-28 00:18:17
  */
 @Slf4j
-public class XxlJobScheduler  {
+public class XxlJobScheduler {
 
     public void init() throws Exception {
         // init i18n
@@ -43,7 +42,7 @@ public class XxlJobScheduler  {
         log.info(">>>>>>>>> init xxl-job admin success.");
     }
 
-    
+
     public void destroy() throws Exception {
 
         // stop-schedule
@@ -68,31 +67,29 @@ public class XxlJobScheduler  {
 
     // ---------------------- I18n ----------------------
 
-    private void initI18n(){
-        for (ExecutorBlockStrategyEnum item:ExecutorBlockStrategyEnum.values()) {
+    private void initI18n() {
+        for (ExecutorBlockStrategyEnum item : ExecutorBlockStrategyEnum.values()) {
             item.setTitle(I18nUtil.getString("jobconf_block_".concat(item.name())));
         }
     }
 
     // ---------------------- executor-client ----------------------
-    private static ConcurrentMap<String, ExecutorBiz> executorBizRepository = new ConcurrentHashMap<String, ExecutorBiz>();
-    public static ExecutorBiz getExecutorBiz(String address) throws Exception {
-        // valid
+    private static ConcurrentMap<String, ExecutorBizClient> executorBizClientCache = new ConcurrentHashMap<>();
+
+    public static ExecutorBizClient getExecutorBizClient(String address) throws Exception {
+        // valid：
         if (StrUtil.isBlank(address)) {
             return null;
         }
 
-        // load-cache
+        // load-cache：
         address = address.trim();
-        ExecutorBiz executorBiz = executorBizRepository.get(address);
-        if (executorBiz != null) {
-            return executorBiz;
+        ExecutorBizClient executorBiz = executorBizClientCache.get(address);
+        if (executorBiz == null) {
+            // set-cache：
+            executorBiz = new ExecutorBizClient(address, XxlJobAdminConfig.getAdminConfig().getAccessToken());
+            executorBizClientCache.put(address, executorBiz);
         }
-
-        // set-cache
-        executorBiz = new ExecutorBizClient(address, XxlJobAdminConfig.getAdminConfig().getAccessToken());
-
-        executorBizRepository.put(address, executorBiz);
         return executorBiz;
     }
 

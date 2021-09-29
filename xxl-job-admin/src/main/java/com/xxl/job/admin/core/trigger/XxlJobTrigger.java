@@ -8,7 +8,7 @@ import com.xxl.job.admin.core.model.XxlJobLog;
 import com.xxl.job.admin.core.route.ExecutorRouteStrategyEnum;
 import com.xxl.job.admin.core.scheduler.XxlJobScheduler;
 import com.xxl.job.admin.core.util.I18nUtil;
-import com.xxl.job.core.biz.ExecutorBiz;
+import com.xxl.job.core.biz.client.ExecutorBizClient;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.biz.model.TriggerParam;
 import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
@@ -30,12 +30,12 @@ public class XxlJobTrigger {
      *
      * @param jobId
      * @param triggerType
-     * @param failRetryCount        >=0: use this param
-     *                              <0: use param from job info config
-     * @param executorParam         null: use job param
-     *                              not null: cover job param
-     * @param addressList           null: use executor addressList
-     *                              not null: cover
+     * @param failRetryCount >=0: use this param
+     *                       <0: use param from job info config
+     * @param executorParam  null: use job param
+     *                       not null: cover job param
+     * @param addressList    null: use executor addressList
+     *                       not null: cover
      */
     public static void trigger(int jobId,
                                TriggerTypeEnum triggerType,
@@ -62,7 +62,7 @@ public class XxlJobTrigger {
         }
 
         // sharding param
-        int[]  shardingParam = new int[]{0, 1};
+        int[] shardingParam = new int[]{0, 1};
 
         processTrigger(group, jobInfo, finalFailRetryCount, triggerType, shardingParam[0], shardingParam[1]);
 
@@ -87,35 +87,36 @@ public class XxlJobTrigger {
         ExecutorRouteStrategyEnum executorRouteStrategyEnum = ExecutorRouteStrategyEnum.match(jobInfo.getExecutorRouteStrategy(), null);    // route strategy
 
         // 1、save log-id
-        XxlJobLog jobLog = new XxlJobLog();
-        jobLog.setJobGroup(jobInfo.getJobGroup());
-        jobLog.setJobId(jobInfo.getId());
-        jobLog.setTriggerTime(new Date());
+        XxlJobLog jobLog = new XxlJobLog()
+                .setJobGroup(jobInfo.getJobGroup())
+                .setJobId(jobInfo.getId())
+                .setTriggerTime(new Date());
+
         XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().save(jobLog);
         log.debug(">>>>>>>>>>> xxl-job trigger start, jobId:{}", jobLog.getId());
 
         // 2、init trigger-param
-        TriggerParam triggerParam = new TriggerParam();
-        triggerParam.setJobId(jobInfo.getId());
-        triggerParam.setExecutorHandler(jobInfo.getExecutorHandler());
-        triggerParam.setExecutorParams(jobInfo.getExecutorParam());
-        triggerParam.setExecutorBlockStrategy(jobInfo.getExecutorBlockStrategy());
-        triggerParam.setExecutorTimeout(jobInfo.getExecutorTimeout());
-        triggerParam.setLogId(jobLog.getId());
-        triggerParam.setLogDateTime(jobLog.getTriggerTime().getTime());
-        triggerParam.setGlueType(jobInfo.getGlueType());
-        triggerParam.setGlueSource(jobInfo.getGlueSource());
-        triggerParam.setGlueUpdatetime(jobInfo.getGlueUpdatetime().getTime());
-        triggerParam.setBroadcastIndex(index);
-        triggerParam.setBroadcastTotal(total);
+        TriggerParam triggerParam = new TriggerParam()
+                .setJobId(jobInfo.getId())
+                .setExecutorHandler(jobInfo.getExecutorHandler())
+                .setExecutorParams(jobInfo.getExecutorParam())
+                .setExecutorBlockStrategy(jobInfo.getExecutorBlockStrategy())
+                .setExecutorTimeout(jobInfo.getExecutorTimeout())
+                .setLogId(jobLog.getId())
+                .setLogDateTime(jobLog.getTriggerTime().getTime())
+                .setGlueType(jobInfo.getGlueType())
+                .setGlueSource(jobInfo.getGlueSource())
+                .setGlueUpdatetime(jobInfo.getGlueUpdatetime().getTime())
+                .setBroadcastIndex(index)
+                .setBroadcastTotal(total);
 
-        // 3、init address
-        String address = null;
+        // 3、init workerAddress
+        String workerAddress = null;
         ReturnT<String> routeAddressResult;
         if (CollectionUtil.isNotEmpty(group.getRegistryList())) {
             routeAddressResult = executorRouteStrategyEnum.getRouter().route(triggerParam, group.getRegistryList());
             if (routeAddressResult.getCode() == ReturnT.SUCCESS_CODE) {
-                address = routeAddressResult.getContent();
+                workerAddress = routeAddressResult.getContent();
             }
         } else {
             routeAddressResult = new ReturnT<>(ReturnT.FAIL_CODE, I18nUtil.getString("jobconf_trigger_address_empty"));
@@ -123,8 +124,8 @@ public class XxlJobTrigger {
 
         // 4、trigger remote executor
         ReturnT<String> triggerResult = null;
-        if (address != null) {
-            triggerResult = runExecutor(triggerParam, address);
+        if (workerAddress != null) {
+            triggerResult = runExecutor(triggerParam, workerAddress);
         } else {
             triggerResult = new ReturnT<>(ReturnT.FAIL_CODE, null);
         }
@@ -149,7 +150,7 @@ public class XxlJobTrigger {
                 .append((routeAddressResult != null && routeAddressResult.getMsg() != null) ? routeAddressResult.getMsg() + "<br><br>" : "").append(triggerResult.getMsg() != null ? triggerResult.getMsg() : "");
 
         // 6、save log trigger-info
-        jobLog.setExecutorAddress(address);
+        jobLog.setExecutorAddress(workerAddress);
         jobLog.setExecutorHandler(jobInfo.getExecutorHandler());
         jobLog.setExecutorParam(jobInfo.getExecutorParam());
         jobLog.setExecutorFailRetryCount(finalFailRetryCount);
@@ -171,7 +172,7 @@ public class XxlJobTrigger {
     public static ReturnT<String> runExecutor(TriggerParam triggerParam, String address) {
         ReturnT<String> runResult = null;
         try {
-            ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(address);
+            ExecutorBizClient executorBiz = XxlJobScheduler.getExecutorBizClient(address);
             runResult = executorBiz.run(triggerParam);
         } catch (Exception e) {
             log.error(">>>>>>>>>>> xxl-job trigger error, please check if the executor[{}] is running.", address, e);

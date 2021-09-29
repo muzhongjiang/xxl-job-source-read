@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 轮询
- *
+ * <p>
  * Created by xuxueli on 17/3/10.
  */
 public class ExecutorRouteRound extends ExecutorRouter {
@@ -20,7 +20,7 @@ public class ExecutorRouteRound extends ExecutorRouter {
     private static ConcurrentMap<Integer, AtomicInteger> routeCountEachJob = new ConcurrentHashMap<>();
     private static long CACHE_VALID_TIME = 0;
 
-    private static int count(int jobId) {
+    private int count(int jobId) {
         // cache clear
         if (System.currentTimeMillis() > CACHE_VALID_TIME) {
             routeCountEachJob.clear();
@@ -39,10 +39,12 @@ public class ExecutorRouteRound extends ExecutorRouter {
         return count.get();
     }
 
+
     @Override
     public ReturnT<String> route(TriggerParam triggerParam, List<String> addressList) {
-        String address = addressList.get(count(triggerParam.getJobId()) % addressList.size());
-        return new ReturnT<String>(address);
+        int index = this.count(triggerParam.getJobId()) % addressList.size();//根据jobId轮询，并不是根据"任务执行先后"轮询
+        String address = addressList.get(index);
+        return new ReturnT<>(address);
     }
 
 }

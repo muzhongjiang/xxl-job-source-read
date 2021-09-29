@@ -37,7 +37,7 @@ public class JobTriggerPoolHelper {
                     }
                 }
         );
-        
+
         //
         slowTriggerPool = new ThreadPoolExecutor(
                 10,
@@ -71,11 +71,13 @@ public class JobTriggerPoolHelper {
     /**
      * add trigger
      */
-    public void addTrigger(final int jobId,
-                           final TriggerTypeEnum triggerType,
-                           final int failRetryCount,
-                           final String executorParam,
-                           final String addressList) {
+    public void addTrigger(
+            final int jobId,
+            final TriggerTypeEnum triggerType,
+            final int failRetryCount,
+            final String executorParam,
+            final String addressList
+    ) {
 
         // choose thread pool
         ThreadPoolExecutor triggerPool_ = fastTriggerPool;
@@ -88,9 +90,7 @@ public class JobTriggerPoolHelper {
         triggerPool_.execute(new Runnable() {
             @Override
             public void run() {
-
                 long start = System.currentTimeMillis();
-
                 try {
                     // do trigger
                     XxlJobTrigger.trigger(jobId, triggerType, failRetryCount, executorParam, addressList);
