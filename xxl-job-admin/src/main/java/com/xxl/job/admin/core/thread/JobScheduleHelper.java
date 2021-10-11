@@ -1,5 +1,6 @@
 package com.xxl.job.admin.core.thread;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.xxl.job.admin.core.conf.XxlJobAdminConfig;
 import com.xxl.job.admin.core.cron.CronExpression;
 import com.xxl.job.admin.core.model.XxlJobInfo;
@@ -75,8 +76,12 @@ public class JobScheduleHelper {
 
                         // 1、pre read
                         long nowTime = System.currentTimeMillis();
-                        List<XxlJobInfo> scheduleList = XxlJobAdminConfig.getAdminConfig().getXxlJobInfoDao().scheduleJobQuery(nowTime + PRE_READ_MS, preReadCount);
-                        if (scheduleList != null && scheduleList.size() > 0) {
+                        List<XxlJobInfo> scheduleList = XxlJobAdminConfig
+                                .getAdminConfig()
+                                .getXxlJobInfoDao()
+                                .scheduleJobQuery(nowTime + PRE_READ_MS, preReadCount);
+
+                        if (CollectionUtil.isNotEmpty(scheduleList)) {
                             // 2、push time-ring
                             for (XxlJobInfo jobInfo : scheduleList) {
 
