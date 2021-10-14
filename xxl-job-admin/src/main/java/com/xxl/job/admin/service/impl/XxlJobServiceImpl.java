@@ -145,7 +145,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 		}
 
 		// add in db
-		jobInfo.setAddTime(new Date());
+		jobInfo.setCreateTime(new Date());
 		jobInfo.setUpdateTime(new Date());
 		jobInfo.setGlueUpdatetime(new Date());
 		xxlJobInfoDao.save(jobInfo);

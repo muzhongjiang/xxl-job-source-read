@@ -1,4 +1,4 @@
-package com.xxl.job.admin.controller;
+package com.xxl.job.admin.web.controller;
 
 import com.xxl.job.admin.core.model.XxlJobInfo;
 import com.xxl.job.admin.core.model.XxlJobLogGlue;

@@ -15,9 +15,9 @@ public class XxlJobInfo {
 	private int id;				// 主键ID
 	
 	private int jobGroup;		// 执行器主键ID
-	private String jobDesc;
+	private String jobDesc;  //描述（或者名称）
 	
-	private Date addTime;
+	private Date createTime;
 	private Date updateTime;
 	
 	private String author;		// 负责人

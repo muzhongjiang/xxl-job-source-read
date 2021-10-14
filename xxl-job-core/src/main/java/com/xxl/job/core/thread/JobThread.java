@@ -46,7 +46,7 @@ public class JobThread extends Thread {
     public JobThread(int jobId, IJobHandler handler) {
         this.jobId = jobId;
         this.handler = handler;
-        this.triggerQueue = new LinkedBlockingQueue<>();
+        this.triggerQueue = new LinkedBlockingQueue<>();//TODO 数量没有上限 ？
         this.triggerLogIdSet = Collections.synchronizedSet(new HashSet<>());
     }
 
@@ -139,7 +139,7 @@ public class JobThread extends Thread {
                         // limit timeout
                         Thread futureThread = null;
                         try {
-                            FutureTask<Boolean> futureTask = new FutureTask<Boolean>(new Callable<Boolean>() {
+                            FutureTask<Boolean> futureTask = new FutureTask<>(new Callable<Boolean>() {
                                 @Override
                                 public Boolean call() throws Exception {
 

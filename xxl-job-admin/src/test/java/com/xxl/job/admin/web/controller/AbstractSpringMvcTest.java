@@ -1,4 +1,4 @@
-package com.xxl.job.admin.controller;
+package com.xxl.job.admin.web.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;

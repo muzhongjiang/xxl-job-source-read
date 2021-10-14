@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xxl.job.admin.dao.JobActionDao">
+    <insert id="insert">
+    </insert>
+
+    <insert id="batchInsert">
+    </insert>
+
+
+    <update id="update">
+    </update>
+
+    <select id="findById" resultType="com.xxl.job.admin.core.model.JobAction">
+        select *
+        from xxl_job_action
+        where id = #{id}
+    </select>
+
+    <delete id="delete">
+        delete
+        from xxl_job_action
+        where id = #{id}
+    </delete>
+
+    <select id="getAll" resultType="com.xxl.job.admin.core.model.JobAction">
+        select *
+        from xxl_job_action
+    </select>
+
+    <select id="findLatestByJobId" resultType="com.xxl.job.admin.core.model.JobAction">
+        select *
+        from xxl_job_action
+        where id = (select max(id) from xxl_job_action where job_id = #{jobId})
+    </select>
+
+    <select id="findByJobId" resultType="com.xxl.job.admin.core.model.JobAction">
+        select *
+        from xxl_job_action
+        where job_id = #{jobId}
+        order by id
+    </select>
+</mapper>

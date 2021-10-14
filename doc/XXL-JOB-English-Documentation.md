@@ -864,7 +864,7 @@ When schedule center of the schedule module was deployed as web service, on one 
 
 The source code location of schedule center’s “log callback api service” as shown below:
 ```
-xxl-job-admin#com.xxl.job.admin.controller.JobApiController.callback
+xxl-job-admin#com.xxl.job.admin.web.controller.JobApiController.callback
 ```
 
 Executor will execute task when it receive task execute request.it will notify the task execute result to schedule center when the task is done. 

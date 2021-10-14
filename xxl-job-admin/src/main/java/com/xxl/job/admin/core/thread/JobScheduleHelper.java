@@ -84,6 +84,13 @@ public class JobScheduleHelper {
                         if (CollectionUtil.isNotEmpty(scheduleList)) {
                             // 2、push time-ring
                             for (XxlJobInfo jobInfo : scheduleList) {
+                                //action不存在就创建(可以不执行，但action必须生成)：TODO
+                                final int jobId = jobInfo.getId();
+                                final TriggerTypeEnum triggerType;
+                                final Integer executorFailRetryCount;
+                                final String executorParam;
+                                //
+
 
                                 // time-ring jump
                                 if (nowTime > jobInfo.getTriggerNextTime() + PRE_READ_MS) {
@@ -100,16 +107,26 @@ public class JobScheduleHelper {
 
                                     // 2、fresh next
                                     refreshNextValidTime(jobInfo, new Date());
+//                                    //
+//                                    triggerType=TriggerTypeEnum.MISFIRE;
 
                                 } else if (nowTime > jobInfo.getTriggerNextTime()) {
                                     // 2.2、trigger-expire < 5s：direct-trigger && make next-trigger-time
 
                                     // 1、trigger
                                     JobTriggerPoolHelper.trigger(jobInfo.getId(), TriggerTypeEnum.CRON, -1, null, null);
+                                    //改写begin >>>>>>>>>>>>>>>>：
+                                    //1.1 生成实例（action）：
+                                    //1.2 执行实例（action）：
+                                    //1.3 history关联actionId：
+                                    //改写end <<<<<<<<
                                     log.debug(">>>>>>>>>>> xxl-job, schedule push trigger : jobId = " + jobInfo.getId());
+
 
                                     // 2、fresh next
                                     refreshNextValidTime(jobInfo, new Date());
+//                                    //
+//                                    triggerType=TriggerTypeEnum.CRON;
 
                                     // next-trigger-time in 5s, pre-read again
                                     if (jobInfo.getTriggerStatus() == 1 && nowTime + PRE_READ_MS > jobInfo.getTriggerNextTime()) {

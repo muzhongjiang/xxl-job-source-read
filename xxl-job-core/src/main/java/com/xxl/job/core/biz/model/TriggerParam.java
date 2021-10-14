@@ -26,8 +26,7 @@ public class TriggerParam implements Serializable{
     private String glueSource;
     private long glueUpdatetime;
 
-    private int broadcastIndex;
-    private int broadcastTotal;
-
+    private int broadcastIndex;// 分片参数：当前分片
+    private int broadcastTotal;// 分片参数：总分片
 
 }

@@ -1,6 +1,7 @@
 package com.xxl.job.admin.core.trigger;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.xxl.job.admin.core.conf.XxlJobAdminConfig;
 import com.xxl.job.admin.core.model.XxlJobGroup;
 import com.xxl.job.admin.core.model.XxlJobInfo;
@@ -56,13 +57,14 @@ public class XxlJobTrigger {
         XxlJobGroup group = XxlJobAdminConfig.getAdminConfig().getXxlJobGroupDao().load(jobInfo.getJobGroup());
 
         // cover addressList
-        if (addressList != null && addressList.trim().length() > 0) {
+        if (StrUtil.isNotBlank(addressList)) {
             group.setAddressType(1);
             group.setAddressList(addressList.trim());
         }
 
         // sharding param
-        int[] shardingParam = new int[]{0, 1};
+        int[] shardingParam = {0, 1};// TODO ???
+
 
         processTrigger(group, jobInfo, finalFailRetryCount, triggerType, shardingParam[0], shardingParam[1]);
 
@@ -70,14 +72,18 @@ public class XxlJobTrigger {
 
 
     /**
-     * @param group               job group, registry list may be empty
-     * @param jobInfo
-     * @param finalFailRetryCount
-     * @param triggerType
-     * @param index               sharding index
-     * @param total               sharding index
+     * @param group job group, registry list may be empty
+     * @param index sharding index
+     * @param total sharding index
      */
     private static void processTrigger(XxlJobGroup group, XxlJobInfo jobInfo, int finalFailRetryCount, TriggerTypeEnum triggerType, int index, int total) {
+
+        //改写begin >>>>>>>>>>>>>>>>：
+        //1.1 生成实例（action）：
+        //1.2 执行实例（action）：
+        //1.3 history关联actionId：
+        //改写end <<<<<<<<
+
 
         // param
         ExecutorBlockStrategyEnum blockStrategy = ExecutorBlockStrategyEnum.match(
@@ -86,11 +92,14 @@ public class XxlJobTrigger {
         );  // block strategy
         ExecutorRouteStrategyEnum executorRouteStrategyEnum = ExecutorRouteStrategyEnum.match(jobInfo.getExecutorRouteStrategy(), null);    // route strategy
 
+
         // 1、save log-id
         XxlJobLog jobLog = new XxlJobLog()
+//                .setJobActionId(jobAction.getId()) // history关联actionId
                 .setJobGroup(jobInfo.getJobGroup())
                 .setJobId(jobInfo.getId())
-                .setTriggerTime(new Date());
+//                .setTriggerTime(new Date());
+                .setTriggerTime(new Date(jobInfo.getTriggerNextTime()));
 
         XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().save(jobLog);
         log.debug(">>>>>>>>>>> xxl-job trigger start, jobId:{}", jobLog.getId());
@@ -119,7 +128,7 @@ public class XxlJobTrigger {
                 workerAddress = routeAddressResult.getContent();
             }
         } else {
-            routeAddressResult = new ReturnT<>(ReturnT.FAIL_CODE, I18nUtil.getString("jobconf_trigger_address_empty"));
+            routeAddressResult = new ReturnT<>(ReturnT.FAIL_CODE, "调度失败：执行器地址为空");
         }
 
         // 4、trigger remote executor

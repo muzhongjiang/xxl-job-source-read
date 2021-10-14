@@ -18,6 +18,8 @@ public class XxlJobLog {
 	// job info
 	private int jobGroup;
 	private int jobId;
+	private long jobActionId;
+
 
 	// execute info
 	private String executorAddress;

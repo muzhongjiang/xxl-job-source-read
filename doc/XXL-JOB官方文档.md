@@ -698,7 +698,7 @@ XXL-JOB的单个任务，针对多个执行器是并行运行的，针对单个�
 
 调度中心提供的"日志回调服务API服务"代码位置如下：
 ```
-xxl-job-admin#com.xxl.job.admin.controller.JobApiController.callback
+xxl-job-admin#com.xxl.job.admin.web.controller.JobApiController.callback
 ```
 
 “执行器”在接收到任务执行请求后，执行任务，在执行结束之后会将执行结果回调通知“调度中心”：
@@ -947,7 +947,7 @@ XXL-JOB 目标是一种跨平台、跨语言的任务调度规范和协议。
 
 ### 6.1 调度中心 RESTful API
 
-API服务位置：com.xxl.job.core.biz.AdminBiz （ com.xxl.job.admin.controller.JobApiController ）
+API服务位置：com.xxl.job.core.biz.AdminBiz （ com.xxl.job.admin.web.controller.JobApiController ）
 API服务请求参考代码：com.xxl.job.adminbiz.AdminBizTest
 
 #### a、任务回调

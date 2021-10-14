@@ -1,4 +1,4 @@
-package com.xxl.job.admin.controller;
+package com.xxl.job.admin.web.controller;
 
 import com.xxl.job.admin.core.exception.XxlJobException;
 import com.xxl.job.admin.core.model.XxlJobGroup;

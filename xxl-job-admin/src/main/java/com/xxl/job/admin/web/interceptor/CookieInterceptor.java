@@ -1,4 +1,4 @@
-package com.xxl.job.admin.controller.interceptor;
+package com.xxl.job.admin.web.interceptor;
 
 import com.xxl.job.admin.core.util.FtlUtil;
 import com.xxl.job.admin.core.util.I18nUtil;
@@ -20,8 +20,7 @@ import java.util.HashMap;
 public class CookieInterceptor extends HandlerInterceptorAdapter {
 
 	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-			ModelAndView modelAndView) throws Exception {
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 
 		// cookie
 		if (modelAndView!=null && request.getCookies()!=null && request.getCookies().length>0) {

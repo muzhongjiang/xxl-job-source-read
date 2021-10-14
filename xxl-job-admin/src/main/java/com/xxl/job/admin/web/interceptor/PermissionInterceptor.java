@@ -1,6 +1,6 @@
-package com.xxl.job.admin.controller.interceptor;
+package com.xxl.job.admin.web.interceptor;
 
-import com.xxl.job.admin.controller.annotation.PermissionLimit;
+import com.xxl.job.admin.web.annotation.PermissionLimit;
 import com.xxl.job.admin.core.model.XxlJobUser;
 import com.xxl.job.admin.core.util.I18nUtil;
 import com.xxl.job.admin.service.LoginService;

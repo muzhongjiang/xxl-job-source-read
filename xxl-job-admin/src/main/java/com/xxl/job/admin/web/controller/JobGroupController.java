@@ -1,4 +1,4 @@
-package com.xxl.job.admin.controller;
+package com.xxl.job.admin.web.controller;
 
 import com.xxl.job.admin.core.model.XxlJobGroup;
 import com.xxl.job.admin.core.model.XxlJobRegistry;
@@ -50,7 +50,7 @@ public class JobGroupController {
 		int list_count = xxlJobGroupDao.pageListCount(start, length, appname, title);
 
 		// package result
-		Map<String, Object> maps = new HashMap<String, Object>();
+		Map<String, Object> maps = new HashMap<>();
 		maps.put("recordsTotal", list_count);		// 总记录数
 		maps.put("recordsFiltered", list_count);	// 过滤后的总记录数
 		maps.put("data", list);  					// 分页列表

@@ -60,7 +60,6 @@ public class JobCompleteHelper {
 
 			@Override
 			public void run() {
-
 				// wait for JobTriggerPoolHelper-init
 				try {
 					TimeUnit.MILLISECONDS.sleep(50);

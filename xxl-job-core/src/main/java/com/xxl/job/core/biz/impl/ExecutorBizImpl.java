@@ -143,10 +143,10 @@ public class ExecutorBizImpl implements ExecutorBiz {
 
         // replace thread (new or exists invalid)
         if (jobThread == null) {//triggerParam.getJobId()
-            jobThread = XxlJobExecutor.registJobThread(triggerParam.getJobId(), jobHandler, removeOldReason);
+            jobThread = XxlJobExecutor.registerJobThread(triggerParam.getJobId(), jobHandler, removeOldReason);
         }
 
-        //任务添加到对应 Thread 的 queue
+        //任务添加到对应 Thread 的 queue ：
         ReturnT<String> pushResult = jobThread.pushTriggerQueue(triggerParam);
         return pushResult;
     }

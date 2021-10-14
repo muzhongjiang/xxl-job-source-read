@@ -1,4 +1,4 @@
-package com.xxl.job.admin.controller;
+package com.xxl.job.admin.web.controller;
 
 import com.xxl.job.admin.core.complete.XxlJobCompleter;
 import com.xxl.job.admin.core.exception.XxlJobException;
@@ -144,7 +144,7 @@ public class JobLogController {
     @ResponseBody
     public ReturnT<LogResult> logDetailCat(String executorAddress, long triggerTime, long logId, int fromLineNum) {
         try {
-            ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(executorAddress);
+            ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBizClient(executorAddress);
             ReturnT<LogResult> logResult = executorBiz.log(new LogParam(triggerTime, logId, fromLineNum));
 
             // is end
@@ -178,7 +178,7 @@ public class JobLogController {
         // request of kill
         ReturnT<String> runResult = null;
         try {
-            ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(log.getExecutorAddress());
+            ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBizClient(log.getExecutorAddress());
             runResult = executorBiz.kill(new KillParam(jobInfo.getId()));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -190,9 +190,9 @@ public class JobLogController {
             log.setHandleMsg(I18nUtil.getString("joblog_kill_log_byman") + ":" + (runResult.getMsg() != null ? runResult.getMsg() : ""));
             log.setHandleTime(new Date());
             XxlJobCompleter.updateHandleInfoAndFinish(log);
-            return new ReturnT<String>(runResult.getMsg());
+            return new ReturnT<>(runResult.getMsg());
         } else {
-            return new ReturnT<String>(500, runResult.getMsg());
+            return new ReturnT<>(500, runResult.getMsg());
         }
     }
 

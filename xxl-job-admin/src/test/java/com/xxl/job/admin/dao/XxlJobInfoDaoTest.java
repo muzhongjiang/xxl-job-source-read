@@ -46,7 +46,7 @@ public class XxlJobInfoDaoTest {
 		info.setGlueRemark("setGlueRemark");
 		info.setChildJobId("1");
 
-		info.setAddTime(new Date());
+		info.setCreateTime(new Date());
 		info.setUpdateTime(new Date());
 		info.setGlueUpdatetime(new Date());
 
